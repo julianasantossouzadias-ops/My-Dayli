@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Daily</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#121212;color:#fff;padding-bottom:90px}
+header{background:#FF7A00;color:#000;padding:20px;border-radius:0 0 24px 24px}
+header h1{margin:0;font-size:28px}
+header p{margin:5px 0 0;opacity:.8}
+.card{background:#222;margin:14px;padding:16px;border-radius:18px}
+.progress{height:10px;background:#444;border-radius:10px;overflow:hidden}
+.bar{height:100%;background:#FF7A00;width:0%;transition:.3s}
+.task{display:flex;align-items:center;gap:10px;background:#2b2b2b;padding:12px;border-radius:14px;margin:8px 0}
+.task.done{opacity:.6;text-decoration:line-through}
+.task input{width:22px;height:22px;accent-color:#FF7A00}
+input[type=text]{width:100%;padding:12px;border-radius:12px;border:none;background:#333;color:#fff;margin-top:8px}
+button{background:#FF7A00;border:none;padding:12px 16px;border-radius:12px;font-weight:bold;width:100%;margin-top:8px;color:#000}
+nav{position:fixed;bottom:0;left:0;right:0;background:#1e1e1e;display:flex;padding:10px}
+nav button{background:none;color:#aaa;font-size:13px;margin:0}
+nav button.active{color:#FF7A00}
+.page{display:none;padding:0 4px}
+.page.active{display:block}
+small{color:#aaa}
+</style>
+</head>
+<body>
+<header><h1>MY DAILY</h1><p>Olá, Juu! Vamos fazer hoje acontecer?</p></header>
+<div id="p-rotina" class="page active">
+<div class="card"><b style="color:#FF7A00">MINHA ROTINA - HOJE</b><p id="pct">0% feito</p><div class="progress"><div class="bar" id="bar"></div></div></div>
+<div class="card"><b>Seu check diário</b><div id="list-rotina"></div>
+<input id="new-rotina" type="text" placeholder="+ Adicionar tarefa / compromisso...">
+<button onclick="add('rotina')">Adicionar</button></div>
+</div>
+<div id="p-treinos" class="page">
+<div class="card"><b style="color:#FF7A00">TREINOS DA SEMANA</b><div id="list-treinos"></div>
+<input id="new-treinos" type="text" placeholder="+ Adicionar treino..."><button onclick="add('treinos')">Adicionar treino</button></div>
+</div>
+<div id="p-casal" class="page">
+<div class="card"><b style="color:#FF7A00">NÓS DOIS - Desafio do Casal</b><div id="list-casal"></div>
+<input id="new-casal" type="text" placeholder="+ Adicionar desafio..."><button onclick="add('casal')">Adicionar</button></div>
+</div>
+<div id="p-kids" class="page">
+<div class="card"><b style="color:#FF7A00">SARAH</b><div id="list-sarah"></div><input id="new-sarah" type="text" placeholder="+ Atividade da Sarah..."><button onclick="add('sarah')">Adicionar</button></div>
+<div class="card"><b style="color:#FF7A00">LORENZO</b><div id="list-lorenzo"></div><input id="new-lorenzo" type="text" placeholder="+ Atividade do Lorenzo..."><button onclick="add('lorenzo')">Adicionar</button></div>
+</div>
+<nav>
+<button class="active" onclick="show('rotina',this)">Minha Rotina</button>
+<button onclick="show('treinos',this)">Treinos</button>
+<button onclick="show('casal',this)">Nós Dois</button>
+<button onclick="show('kids',this)">Crianças</button>
+</nav>
+<script>
+let data = JSON.parse(localStorage.getItem('mydaily')||'null') || {
+rotina:[{t:'Leitura da Bíblia + Oração',d:true},{t:'Academia - Quadríceps',d:true},{t:'Ler 10 páginas',d:true},{t:'Comer melhor',d:false},{t:'Mentalização',d:false},{t:'Estudo',d:false},{t:'Tempo de qualidade com o marido',d:false}],
+treinos:[{t:'Segunda - Quadríceps',d:true},{t:'Terça - Glúteo + Posterior',d:false},{t:'Quinta - Quadríceps + Glúteo',d:false},{t:'Sábado - Full Leg',d:false}],
+casal:[{t:'Orar juntos',d:false},{t:'Date da semana',d:false},{t:'Treinar juntos 1x',d:false},{t:'Sem celular depois das 21h',d:false}],
+sarah:[{t:'Tempo de qualidade com a Sarah',d:false},{t:'Leitura com a Sarah',d:false},{t:'Culto',d:false}],
+lorenzo:[{t:'Tempo de qualidade com o Lorenzo',d:false},{t:'Atividade / brincar',d:false},{t:'Culto Kids',d:false}]
+};
+function save(){localStorage.setItem('mydaily',JSON.stringify(data)); render();}
+function render(){
+for(let k in data){let el=document.getElementById('list-'+k); if(!el) continue; el.innerHTML=''; data[k].forEach((item,i)=>{let div=document.createElement('div'); div.className='task'+(item.d?' done':''); div.innerHTML=`<input type="checkbox" ${item.d?'checked':''} onchange="toggle('${k}',${i})"><span>${item.t}</span>`; el.appendChild(div);});}
+let total=data.rotina.length, done=data.rotina.filter(x=>x.d).length; let p= total? Math.round(done/total*100):0; document.getElementById('bar').style.width=p+'%'; document.getElementById('pct').innerText=done+' de '+total+' feitas - '+p+'%';}
+function toggle(k,i){data[k][i].d=!data[k][i].d; save();}
+function add(k){let inp=document.getElementById('new-'+k); if(!inp.value.trim()) return; data[k].push({t:inp.value,d:false}); inp.value=''; save();}
+function show(p,btn){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active')); document.getElementById('p-'+p).classList.add('active'); document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active')); btn.classList.add('active');}
+render();
+</script>
+</body>
+</html>
