@@ -3,71 +3,231 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Daily</title>
+<title>My Daily - Meu Dia a Dia</title>
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#121212;color:#fff;padding-bottom:90px}
-header{background:#FF7A00;color:#000;padding:20px;border-radius:0 0 24px 24px}
-header h1{margin:0;font-size:28px}
-header p{margin:5px 0 0;opacity:.8}
-.card{background:#222;margin:14px;padding:16px;border-radius:18px}
-.progress{height:10px;background:#444;border-radius:10px;overflow:hidden}
-.bar{height:100%;background:#FF7A00;width:0%;transition:.3s}
-.task{display:flex;align-items:center;gap:10px;background:#2b2b2b;padding:12px;border-radius:14px;margin:8px 0}
-.task.done{opacity:.6;text-decoration:line-through}
-.task input{width:22px;height:22px;accent-color:#FF7A00}
-input[type=text]{width:100%;padding:12px;border-radius:12px;border:none;background:#333;color:#fff;margin-top:8px}
-button{background:#FF7A00;border:none;padding:12px 16px;border-radius:12px;font-weight:bold;width:100%;margin-top:8px;color:#000}
-nav{position:fixed;bottom:0;left:0;right:0;background:#1e1e1e;display:flex;padding:10px}
-nav button{background:none;color:#aaa;font-size:13px;margin:0}
-nav button.active{color:#FF7A00}
-.page{display:none;padding:0 4px}
-.page.active{display:block}
-small{color:#aaa}
+body{margin:0;background:#05070f;color:#fff;padding-bottom:80px}
+header{background:#0a1633;padding:20px;text-align:center;border-bottom:2px solid #4da6ff}
+header h1{margin:0;font-size:24px;color:#7cc4ff}
+header p{color:#cfe6ff;margin:5px 0 0}
+.tabs{display:flex;overflow-x:auto;background:#0a1633;position:sticky;top:0;z-index:10}
+.tabs button{flex:1;min-width:90px;padding:12px 8px;background:none;border:none;color:#a8c6ff;cursor:pointer;font-weight:bold}
+.tabs button.active{color:#fff;border-bottom:3px solid #4da6ff;background:#12275a}
+.card{background:#0f1a3a;margin:14px;border-radius:16px;padding:16px;border:1px solid #1e3a6e}
+.card h2{margin:0 0 10px;color:#7cc4ff;font-size:18px}
+.card h3{color:#fff;margin:14px 0 6px;font-size:15px}
+input,textarea,select{width:100%;padding:10px;margin:6px 0;border-radius:10px;border:1px solid #2a4a8a;background:#05070f;color:#fff}
+button.btn{background:#4da6ff;color:#000;border:none;padding:11px;border-radius:10px;font-weight:bold;width:100%;margin-top:8px;cursor:pointer}
+label{font-size:13px;color:#a8c6ff}
+.check{display:flex;gap:10px;align-items:center;background:#05070f;padding:10px;border-radius:10px;margin:6px 0}
+.check input{width:20px;height:20px}
+.profile-pic{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #4da6ff;background:#222;display:block;margin:0 auto 10px}
+.pill{display:inline-block;background:#1e3a6e;padding:6px 10px;border-radius:20px;font-size:12px;margin:3px}
+a{color:#7cc4ff}
+.small{font-size:12px;color:#a8c6ff}
+.hidden{display:none}
 </style>
 </head>
 <body>
-<header><h1>MY DAILY</h1><p>Olá, Juu! Vamos fazer hoje acontecer?</p></header>
-<div id="p-rotina" class="page active">
-<div class="card"><b style="color:#FF7A00">MINHA ROTINA - HOJE</b><p id="pct">0% feito</p><div class="progress"><div class="bar" id="bar"></div></div></div>
-<div class="card"><b>Seu check diário</b><div id="list-rotina"></div>
-<input id="new-rotina" type="text" placeholder="+ Adicionar tarefa / compromisso...">
-<button onclick="add('rotina')">Adicionar</button></div>
+<header>
+<h1>MY DAILY 🖤💙</h1>
+<p id="saudacao">Bom dia! Vamos cuidar do seu dia?</p>
+</header>
+
+<div class="tabs">
+<button onclick="show('perfil',this)" class="active">Perfil</button>
+<button onclick="show('agenda',this)">Agenda</button>
+<button onclick="show('saude',this)">Saúde</button>
+<button onclick="show('devocional',this)">Devocional</button>
+<button onclick="show('maternidade',this)">Maternidade</button>
+<button onclick="show('casal',this)">Casal</button>
 </div>
-<div id="p-treinos" class="page">
-<div class="card"><b style="color:#FF7A00">TREINOS DA SEMANA</b><div id="list-treinos"></div>
-<input id="new-treinos" type="text" placeholder="+ Adicionar treino..."><button onclick="add('treinos')">Adicionar treino</button></div>
+
+<!-- PERFIL -->
+<div id="perfil" class="page">
+<div class="card">
+<h2>Meu Perfil</h2>
+<img id="fotoPreview" class="profile-pic" src="">
+<input type="file" accept="image/*" onchange="lerFoto(event)">
+<label>Seu nome</label><input id="nome" placeholder="Ex: Juliana">
+<label>Como gosta de ser chamada?</label><input id="apelido" placeholder="Ex: Juu">
+<label>Data de nascimento</label><input type="date" id="nasc">
+<button class="btn" onclick="salvarPerfil()">Salvar Perfil</button>
+<p class="small">Sua foto e dados ficam salvos só no seu celular.</p>
 </div>
-<div id="p-casal" class="page">
-<div class="card"><b style="color:#FF7A00">NÓS DOIS - Desafio do Casal</b><div id="list-casal"></div>
-<input id="new-casal" type="text" placeholder="+ Adicionar desafio..."><button onclick="add('casal')">Adicionar</button></div>
 </div>
-<div id="p-kids" class="page">
-<div class="card"><b style="color:#FF7A00">SARAH</b><div id="list-sarah"></div><input id="new-sarah" type="text" placeholder="+ Atividade da Sarah..."><button onclick="add('sarah')">Adicionar</button></div>
-<div class="card"><b style="color:#FF7A00">LORENZO</b><div id="list-lorenzo"></div><input id="new-lorenzo" type="text" placeholder="+ Atividade do Lorenzo..."><button onclick="add('lorenzo')">Adicionar</button></div>
+
+<!-- AGENDA -->
+<div id="agenda" class="page hidden">
+<div class="card">
+<h2>Agenda da Semana 📅</h2>
+<label>Escolha o dia</label>
+<select id="diaSemana" onchange="mostrarDia()">
+<option>Segunda</option><option>Terça</option><option>Quarta</option><option>Quinta</option><option>Sexta</option><option>Sábado</option><option>Domingo</option>
+</select>
+<div id="listaDia"></div>
+<input id="novaTarefa" placeholder="Nova tarefa do dia... ex: Ler 10 páginas">
+<button class="btn" onclick="addTarefa()">+ Adicionar Tarefa</button>
 </div>
-<nav>
-<button class="active" onclick="show('rotina',this)">Minha Rotina</button>
-<button onclick="show('treinos',this)">Treinos</button>
-<button onclick="show('casal',this)">Nós Dois</button>
-<button onclick="show('kids',this)">Crianças</button>
-</nav>
+</div>
+
+<!-- SAUDE -->
+<div id="saude" class="page hidden">
+<div class="card">
+<h2>Saúde 💪🥗</h2>
+<button class="btn" onclick="toggleSaude('treino')">Ver Treinos</button>
+<button class="btn" onclick="toggleSaude('alimentacao')">Ver Alimentação</button>
+
+<div id="treinoBox">
+<h3>Segunda - Bíceps + Costas + Cardio</h3>
+<div class="check"><input type="checkbox"> Rosca direta - 3x12</div>
+<div class="check"><input type="checkbox"> Rosca martelo - 3x12</div>
+<div class="check"><input type="checkbox"> Puxada alta - 3x12</div>
+<div class="check"><input type="checkbox"> Remada curvada - 3x12</div>
+<div class="check"><input type="checkbox"> Cardio 20 min - esteira / bike</div>
+
+<h3>Terça - Quadríceps + ABS + Cardio</h3>
+<div class="check"><input type="checkbox"> Agachamento - 3x12</div>
+<div class="check"><input type="checkbox"> Leg Press - 3x12</div>
+<div class="check"><input type="checkbox"> Cadeira extensora - 3x15</div>
+<div class="check"><input type="checkbox"> Prancha - 3x30seg</div>
+<div class="check"><input type="checkbox"> Cardio 20 min</div>
+
+<h3>Quarta - Tríceps + Ombro + Peito + Cardio</h3>
+<div class="check"><input type="checkbox"> Tríceps corda - 3x12</div>
+<div class="check"><input type="checkbox"> Desenvolvimento ombro - 3x12</div>
+<div class="check"><input type="checkbox"> Supino - 3x12</div>
+<div class="check"><input type="checkbox"> Cardio 20 min</div>
+
+<h3>Quinta - Posterior + Glúteo + Cardio</h3>
+<div class="check"><input type="checkbox"> Stiff - 3x12</div>
+<div class="check"><input type="checkbox"> Mesa flexora - 3x12</div>
+<div class="check"><input type="checkbox"> Elevação pélvica - 3x15</div>
+<div class="check"><input type="checkbox"> Cardio 20 min</div>
+
+<h3>Sexta - ABS + Cardio</h3>
+<div class="check"><input type="checkbox"> Abdominal supra - 3x20</div>
+<div class="check"><input type="checkbox"> Abdominal infra - 3x15</div>
+<div class="check"><input type="checkbox"> Prancha lateral - 3x30seg</div>
+<div class="check"><input type="checkbox"> Cardio 30 min</div>
+</div>
+
+<div id="alimentacaoBox" class="hidden">
+<h3>☕ Café da Manhã - Opções Saudáveis</h3>
+<p>• Ovos mexidos + pão integral + café sem açúcar<br>• Iogurte natural + granola + frutas<br>• Vitamina de banana + aveia + whey</p>
+<h3>🥗 Almoço</h3>
+<p>• Frango grelhado + arroz integral + salada<br>• Carne moída magra + batata doce + legumes<br>• Peixe + quinoa + brócolis</p>
+<h3>🍎 Lanche da Tarde</h3>
+<p>• Fruta + castanhas<br>• Iogurte + chia<br>• Sanduíche integral de frango</p>
+<h3>🌙 Janta</h3>
+<p>• Omelete + salada<br>• Sopa de legumes + frango desfiado<br>• Salada de atum + batata</p>
+<label>Minha refeição de hoje</label>
+<textarea placeholder="Escreva o que você comeu hoje..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- DEVOCIONAL -->
+<div id="devocional" class="page hidden">
+<div class="card">
+<h2>Comece com um Devocional 🙏</h2>
+<label>Dia da semana</label>
+<select><option>Segunda</option><option>Terça</option><option>Quarta</option><option>Quinta</option><option>Sexta</option><option>Sábado</option><option>Domingo</option></select>
+<label>Meu pedido de oração</label>
+<textarea placeholder="Escreva seu pedido de oração..."></textarea>
+<label>Minha meditação de hoje</label>
+<textarea placeholder="O que Deus falou com você hoje?"></textarea>
+<button class="btn" onclick="alert('Devocional salvo! Deus te abençoe!')">Salvar Devocional</button>
+<h3>Devocionais curtos pra você acessar:</h3>
+<p>• <a href="https://www.youtube.com/results?search_query=devocional+curto+diario" target="_blank">Devocional Curto Diário - YouTube</a><br>
+• <a href="https://www.bibliaonline.com.br" target="_blank">Ler Bíblia Online</a><br>
+• <a href="https://www.youtube.com/results?search_query=devocional+mulheres" target="_blank">Devocional para Mulheres</a></p>
+</div>
+</div>
+
+<!-- MATERNIDADE -->
+<div id="maternidade" class="page hidden">
+<div class="card">
+<h2>Maternidade 👶💛</h2>
+<label>Nome do seu filho(a) 1 - clique pra editar</label><input value="Filho 1" onclick="this.select()">
+<label>Nome do seu filho(a) 2</label><input value="Filho 2" onclick="this.select()">
+<button class="btn" onclick="alert('Hora de ter tempo de qualidade com seus filhos! 💛')">🔔 Ativar Lembrete: Tempo de Qualidade</button>
+<h3>🎥 Vídeos sobre Maternidade</h3>
+<p>• <a href="https://www.youtube.com/results?search_query=maternidade+real+tempo+de+qualidade+filhos" target="_blank">Maternidade Real - Tempo de Qualidade</a><br>
+• <a href="https://www.youtube.com/results?search_query=como+educar+filhos+com+amor" target="_blank">Como Educar com Amor</a></p>
+<h3>📚 Livros que indico</h3>
+<p>• Pais que Brilham - Gary Chapman<br>• O Poder do Pai e da Mãe que Oram - Stormie Omartian<br>• Criando Filhos para o Céu</p>
+<h3>🎨 Atividades pra fazer com os filhos</h3>
+<div class="check"><input type="checkbox"> Desenhar juntos por 15 min</div>
+<div class="check"><input type="checkbox"> Contar história antes de dormir</div>
+<div class="check"><input type="checkbox"> Cozinhar uma receita juntos</div>
+<div class="check"><input type="checkbox"> Passeio no parque sem celular</div>
+<div class="check"><input type="checkbox"> Montar quebra-cabeça / lego</div>
+</div>
+</div>
+
+<!-- CASAL -->
+<div id="casal" class="page hidden">
+<div class="card">
+<h2>Desafio do Casal 💑</h2>
+<label>Você quer usar essa aba?</label>
+<select id="usaCasal" onchange="toggleCasal()"><option value="sim">Sim, tenho namorado / marido</option><option value="nao">Não, por enquanto não</option></select>
+<div id="casalConteudo">
+<label>Nome do parceiro(a) - editável</label><input placeholder="Nome dele(a)">
+<h3>Desafio da Semana</h3>
+<div class="check"><input type="checkbox"> 1 date sem celular</div>
+<div class="check"><input type="checkbox"> Orar juntos 1x</div>
+<div class="check"><input type="checkbox"> Treinar juntos 1x</div>
+<div class="check"><input type="checkbox"> Elogiar 1x por dia</div>
+<textarea placeholder="Nosso desafio personalizado..."></textarea>
+<button class="btn">Salvar Desafio</button>
+</div>
+<p id="casalOff" class="hidden small">Essa aba está desligada. Quando quiser, é só ativar de novo.</p>
+</div>
+</div>
+
 <script>
-let data = JSON.parse(localStorage.getItem('mydaily')||'null') || {
-rotina:[{t:'Leitura da Bíblia + Oração',d:true},{t:'Academia - Quadríceps',d:true},{t:'Ler 10 páginas',d:true},{t:'Comer melhor',d:false},{t:'Mentalização',d:false},{t:'Estudo',d:false},{t:'Tempo de qualidade com o marido',d:false}],
-treinos:[{t:'Segunda - Quadríceps',d:true},{t:'Terça - Glúteo + Posterior',d:false},{t:'Quinta - Quadríceps + Glúteo',d:false},{t:'Sábado - Full Leg',d:false}],
-casal:[{t:'Orar juntos',d:false},{t:'Date da semana',d:false},{t:'Treinar juntos 1x',d:false},{t:'Sem celular depois das 21h',d:false}],
-sarah:[{t:'Tempo de qualidade com a Sarah',d:false},{t:'Leitura com a Sarah',d:false},{t:'Culto',d:false}],
-lorenzo:[{t:'Tempo de qualidade com o Lorenzo',d:false},{t:'Atividade / brincar',d:false},{t:'Culto Kids',d:false}]
-};
-function save(){localStorage.setItem('mydaily',JSON.stringify(data)); render();}
-function render(){
-for(let k in data){let el=document.getElementById('list-'+k); if(!el) continue; el.innerHTML=''; data[k].forEach((item,i)=>{let div=document.createElement('div'); div.className='task'+(item.d?' done':''); div.innerHTML=`<input type="checkbox" ${item.d?'checked':''} onchange="toggle('${k}',${i})"><span>${item.t}</span>`; el.appendChild(div);});}
-let total=data.rotina.length, done=data.rotina.filter(x=>x.d).length; let p= total? Math.round(done/total*100):0; document.getElementById('bar').style.width=p+'%'; document.getElementById('pct').innerText=done+' de '+total+' feitas - '+p+'%';}
-function toggle(k,i){data[k][i].d=!data[k][i].d; save();}
-function add(k){let inp=document.getElementById('new-'+k); if(!inp.value.trim()) return; data[k].push({t:inp.value,d:false}); inp.value=''; save();}
-function show(p,btn){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active')); document.getElementById('p-'+p).classList.add('active'); document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active')); btn.classList.add('active');}
-render();
+function show(id,btn){
+document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+document.getElementById(id).classList.remove('hidden');
+document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+}
+function toggleSaude(tipo){
+document.getElementById('treinoBox').classList.toggle('hidden', tipo!=='treino');
+document.getElementById('alimentacaoBox').classList.toggle('hidden', tipo!=='alimentacao');
+}
+function toggleCasal(){
+let v=document.getElementById('usaCasal').value;
+document.getElementById('casalConteudo').classList.toggle('hidden', v==='nao');
+document.getElementById('casalOff').classList.toggle('hidden', v!=='nao');
+}
+function lerFoto(e){
+let r=new FileReader();r.onload=function(){document.getElementById('fotoPreview').src=r.result;localStorage.setItem('foto',r.result)};r.readAsDataURL(e.target.files[0]);
+}
+function salvarPerfil(){
+let nome=document.getElementById('nome').value;
+let apelido=document.getElementById('apelido').value || nome;
+localStorage.setItem('nome',nome);localStorage.setItem('apelido',apelido);
+document.getElementById('saudacao').innerText='Olá, '+apelido+'! Vamos cuidar do seu dia?';
+alert('Perfil salvo, '+apelido+'! 💙');
+}
+let tarefas={};
+function mostrarDia(){
+let dia=document.getElementById('diaSemana').value;
+let div=document.getElementById('listaDia');
+let lista=tarefas[dia]||['Ler 10 páginas','Beber 2L de água','Academia'];
+div.innerHTML='<h3>'+dia+'</h3>'+lista.map(t=>'<div class="check"><input type="checkbox"> '+t+'</div>').join('');
+}
+function addTarefa(){
+let dia=document.getElementById('diaSemana').value;
+let v=document.getElementById('novaTarefa').value;if(!v)return;
+if(!tarefas[dia]) tarefas[dia]=[];
+tarefas[dia].push(v);document.getElementById('novaTarefa').value='';mostrarDia();
+}
+mostrarDia();
+let foto=localStorage.getItem('foto');if(foto)document.getElementById('fotoPreview').src=foto;
+let apelidoSalvo=localStorage.getItem('apelido');if(apelidoSalvo)document.getElementById('saudacao').innerText='Olá, '+apelidoSalvo+'! Vamos cuidar do seu dia?';
 </script>
 </body>
-</html>
+                     </html>
