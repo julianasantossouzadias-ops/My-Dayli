@@ -1,56 +1,38 @@
-
-
 <!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>My Daily - o app da sua melhor versão.</title>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Daily</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#fff;color:#111}
-header{padding:16px;display:flex;gap:12px;align-items:center;position:sticky;top:0;background:#fff;border-bottom:1px solid #eee}
-.avatar{width:52px;height:52px;border-radius:50%;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;cursor:pointer;overflow:hidden;border:2px solid #2563eb}
-.avatar img{width:100%;height:100%;object-fit:cover}
-h1{margin:0;font-size:22px}h1+p{margin:2px 0 0;color:#666;font-size:13px}
-nav{display:flex;gap:8px;overflow:auto;padding:12px 16px}
-nav button{border:1px solid #dbeafe;background:#2563eb;color:#fff;padding:10px 14px;border-radius:999px;white-space:nowrap;cursor:pointer;font-weight:600}
-nav button.active{background:#fff!important;color:#2563eb!important;border:2px solid #2563eb}
-main{padding:0 16px 90px;max-width:720px;margin:auto}
-.card{background:#f8fafc;border:1px solid #eef2ff;border-radius:16px;padding:14px;margin:12px 0}
-input,textarea,select{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;margin:6px 0;font-size:15px}
-button.primary{background:#2563eb;color:#fff;border:0;padding:12px;border-radius:10px;width:100%;font-weight:700;cursor:pointer}
-button.ghost{background:#fff;border:1px solid #2563eb;color:#2563eb;padding:8px 12px;border-radius:999px;cursor:pointer}
-.days{display:flex;gap:8px;flex-wrap:wrap}.days button{padding:9px 12px;border-radius:999px;border:1px solid #ddd;background:#fff;cursor:pointer}
-.days button.active{background:#2563eb;color:#fff}
-.task{display:flex;gap:10px;align-items:center;background:#fff;padding:10px;border-radius:12px;margin:6px 0;border:1px solid #eee}
-.task.done{opacity:.6;text-decoration:line-through}
-.hidden{display:none}
-img.moment{width:100%;border-radius:12px;margin-top:8px}
-</style></head><body>
-<header><label class="avatar" id="avatar">FOTO<input type="file" id="fotoPerfil" accept="image/*" hidden></label><div><h1>My Daily</h1><p>o app da sua melhor versão.</p></div></header>
+body{margin:0;font-family:Arial;background:#fff;color:#222}
+header{padding:14px;display:flex;gap:12px;align-items:center;border-bottom:1px solid #eee}
+.foto{width:54px;height:54px;border-radius:50%;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid #2563eb;font-size:11px;text-align:center;cursor:pointer}
+.foto img{width:100%;height:100%;object-fit:cover}
+h1{margin:0;font-size:22px}
+.sub{margin:0;color:#666;font-size:13px}
+nav{display:flex;gap:8px;overflow:auto;padding:12px}
+nav button{background:#2563eb;color:#fff;border:1px solid #2563eb;padding:10px 14px;border-radius:999px;white-space:nowrap}
+nav button.ativo{background:#fff;color:#2563eb}
+main{padding:0 14px 80px;max-width:700px;margin:auto}
+.card{background:#f8fafc;border:1px solid #eee;border-radius:14px;padding:14px;margin:12px 0}
+input,textarea,select{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;margin:6px 0;font-size:15px;box-sizing:border-box}
+.btn{background:#2563eb;color:#fff;border:0;padding:12px;border-radius:10px;width:100%;font-weight:bold}
+.btn2{background:#fff;border:1px solid #2563eb;color:#2563eb;padding:8px 12px;border-radius:999px;margin:4px 4px 4px 0}
+.dias button{padding:9px 12px;border-radius:999px;border:1px solid #ddd;background:#fff;margin:3px}
+.dias button.ativo{background:#2563eb;color:#fff}
+.item{display:flex;gap:8px;align-items:center;background:#fff;padding:10px;border-radius:10px;border:1px solid #eee;margin:6px 0}
+.feito{opacity:.6;text-decoration:line-through}
+.escondido{display:none}
+.foto-momento{width:100%;border-radius:10px;margin-top:8px}
+</style>
+</head>
+<body>
+<header>
+<label class="foto" id="caixaFoto">FOTO<input type="file" id="fotoPerfil" accept="image/*" style="display:none"></label>
+<div><h1>My Daily</h1><p class="sub">o app da sua melhor versão.</p></div>
+</header>
+
 <nav id="menu">
-<button class="active" data-t="devocional">Devocional</button><button data-t="tarefas">Tarefas da Semana</button><button data-t="treino">Treino</button><button data-t="alimentacao">Alimentação</button><button data-t="saude">Saúde</button><button data-t="maternidade">Maternidade</button>
-</nav>
-<main>
-<section id="devocional"><div class="card"><h2>Devocional - Primeira atividade do dia</h2><p id="dicaTxt"></p><label>Data</label><input type="date" id="devData"><label>Pelo que você é grato hoje?</label><textarea id="grato"></textarea><label>Momento de oração</label><textarea id="oracao"></textarea><label>Palavra que li hoje e o que aprendi</label><textarea id="palavra"></textarea><button class="primary" onclick="salvarDev()">Salvar Devocional</button></div><div class="card"><h3>Meus Devocionais Salvos</h3><div id="listaDev"></div></div></section>
-<section id="tarefas" class="hidden"><div class="card"><h2>Tarefas da Semana</h2><p>escolha o dia da semana que quer ver suas tarefas</p><div class="days" id="diasTarefas"></div><div id="listaTarefas"></div><button class="primary" onclick="abrirAddTarefa()">+ Adicionar Tarefa</button><div id="formTarefa" class="hidden"><input id="novaTarefa" placeholder="Ex: Ler 10 páginas"><input type="time" id="horaTarefa"><button class="primary" onclick="addTarefa()">Salvar Tarefa</button></div></div></section>
-<section id="treino" class="hidden"><div class="card"><h2>Treino</h2><div class="days" id="diasTreino"></div><div id="listaTreino"></div><h3>Editar meu treino</h3><input id="novoEx" placeholder="Ex: Agachamento 3x12"><input id="linkEx" placeholder="Link YouTube de apoio (fica oculto)"><button class="primary" onclick="addEx()">Adicionar Exercício</button></div></section>
-<section id="alimentacao" class="hidden"><div class="card"><h2>Alimentação</h2><input type="date" id="dataAlim"><select id="diaAlim"><option>Segunda</option><option>Terça</option><option>Quarta</option><option>Quinta</option><option>Sexta</option><option>Sábado</option><option>Domingo</option></select><label>Café da manhã</label><input id="cafe"><label>Almoço</label><input id="almoco"><label>Lanche da tarde</label><input id="lanche"><label>Janta</label><input id="janta"><button class="primary" onclick="calcularCal()">Calcular minhas calorias</button><div id="resCal"></div><div id="histAlim"></div></div></section>
-<section id="saude" class="hidden"><div class="card"><h2>Saúde</h2><label>Água hoje (copos)</label><input type="number" id="agua" value="0"><label>Horas de sono</label><input type="number" id="sono"><button class="primary" onclick="alert('Saúde salva!')">Salvar Saúde</button></div></section>
-<section id="maternidade" class="hidden"><div class="card"><h2>Maternidade</h2><label>Quantos filhos você tem?</label><select id="qtdFilhos" onchange="abrirNomes()"><option value="">Selecione</option><option>1</option><option>2</option><option>3</option><option>4</option></select><div id="nomesFilhos"></div><div class="days" id="diasMat"></div><h3>Sugestões - clique para adicionar</h3><div id="sugestoes"></div><div id="ativMat"></div><h3>Registrar momento com foto</h3><input type="file" accept="image/*" id="fotoMomento"><input id="descMomento" placeholder="O que vocês fizeram?"><button class="primary" onclick="salvarMomento()">Salvar Momento</button><div id="momentos"></div><h3>Dicas de livros e vídeos</h3><p id="dicaMat"></p></div></section>
-</main>
-<script>
-const dias=['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
-let diaAtual='Segunda',diaTreino='Segunda',diaMat='Segunda';
-let tarefas=JSON.parse(localStorage.getItem('tarefas')||'{}');
-let treinos={Segunda:[{n:'Agachamento 3x12',link:'https://youtube.com/watch?v=exemplo1'},{n:'Caminhada 20 min',link:'https://youtube.com/watch?v=exemplo2'}]};
-let devs=JSON.parse(localStorage.getItem('devs')||'[]');
-let momentos=JSON.parse(localStorage.getItem('momentos')||'[]');
-const dicasDev=['Comece o dia agradecendo.','Ore antes de pegar o celular.','Leia um salmo hoje.','Deus cuida dos detalhes.','Seja luz hoje.','Silencie e ouça.','Entregue sua ansiedade.'];
-const dicasMat=['Livro: A mamãe e o bebê - Vídeo: Rotina com filhos','Livro: Educar com amor - Vídeo: Brincadeiras sensoriais','Livro: Maternidade leve - Vídeo: Hora da leitura'];
-document.getElementById('dicaTxt').innerText='Dica de hoje: '+dicasDev[new Date().getDate()%dicasDev.length];
-document.getElementById('dicaMat').innerText=dicasMat[new Date().getDate()%dicasMat.length];
-document.querySelectorAll('#menu button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#menu button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));document.getElementById(b.dataset.t).classList.remove('hidden')});
-function renderDias(id,fn,ativo){document.getElementById(id).innerHTML=dias.map(d=>`<button class="${d===ativo?'active':''}" onclick="${fn}('${d}')">${d}</button>`).join('')}
-function setDia(d){diaAtual=d;renderDias('diasTarefas',"setDia",d);renderTarefas()}
-function setDiaTreino(d){diaTreino=d;renderDias('diasTreino',"setDiaTreino",d);renderTreino()}
-function setDiaMat(d){diaMat=d;renderDias('diasMat',"setDiaMat",d);renderMat()}
-renderDias('diasTarefas',"setDia",'Segunda');renderDias('diasTreino',"setDiaTreino",'Segunda');renderDias('diasMat',"setDiaMat",'Segunda');
-function renderTarefas(){let l=tarefas[diaAtual]||[];document.getElementById('listaTarefas').innerHTML=l.length?l.map((t,i)=>`<div class="task ${t.done?'done':''}"><input type="checkbox" ${t.done?'checked':''} onchange="con
+<button data-aba="devocional" class="ativo">Devocional</button>
+<button data-aba="tarefas
